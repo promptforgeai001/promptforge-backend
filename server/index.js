@@ -1,3 +1,6 @@
+console.log("OPENAI:", process.env.OPENAI_API_KEY ? "FOUND" : "MISSING");
+console.log("STRIPE:", process.env.STRIPE_SECRET_KEY ? "FOUND" : "MISSING");
+console.log("FIREBASE:", process.env.FIREBASE_PROJECT_ID ? "FOUND" : "MISSING");
 import express from "express";
 import rateLimit from "express-rate-limit";
 import dotenv from "dotenv";
