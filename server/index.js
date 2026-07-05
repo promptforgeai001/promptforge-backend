@@ -16,7 +16,11 @@ dotenv.config({ override: true });
 const app = express();
 
 const corsOptions = {
-  origin: ["http://localhost:5173", "http://127.0.0.1:5173"],
+  origin: [
+    "http://localhost:5173",
+    "http://127.0.0.1:5173",
+    "https://www.promptforgehub.com"
+  ],
   methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
   allowedHeaders: ["Content-Type", "Authorization"],
 };
@@ -391,7 +395,8 @@ app.post("/webhook", express.raw({ type: "application/json" }), async (req, res)
 });
 
 
-const PORT = 5001;
+const PORT = process.env.PORT || 5001;
+
 app.listen(PORT, () => {
-  console.log(`🚀 Server running on http://localhost:${PORT}`);
+  console.log(`Server running on port ${PORT}`);
 });

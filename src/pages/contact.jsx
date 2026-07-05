@@ -3,7 +3,7 @@ import { auth } from "../services/firebase";
 import { onAuthStateChanged } from "firebase/auth";
 import toast from "react-hot-toast";
 
-const API_URL = "http://localhost:5001";
+const API_URL = "https://promptforge-backend-v8z7.onrender.com";
 
 function Contact() {
   const [form, setForm] = useState({

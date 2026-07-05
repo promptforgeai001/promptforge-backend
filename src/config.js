@@ -1,0 +1,1 @@
+export const API_URL = "https://promptforge-backend-v8z7.onrender.com";

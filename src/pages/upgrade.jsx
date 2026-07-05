@@ -13,7 +13,7 @@ function Upgrade() {
     }
 
     try {
-      const response = await fetch("http://localhost:5001/create-checkout-session", {
+      const response = await fetch("https://promptforge-backend-v8z7.onrender.com/create-checkout-session", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

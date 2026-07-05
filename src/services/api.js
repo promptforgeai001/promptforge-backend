@@ -11,7 +11,7 @@ export async function generatePrompt(input) {
   }
 
   const response = await fetch(
-    "http://localhost:5001/generate",
+    "https://promptforge-backend-v8z7.onrender.com/generate",
     {
       method: "POST",
       headers: {
@@ -38,7 +38,7 @@ export async function generatePrompt(input) {
 export async function rewritePrompt(input) {
 
   const response = await fetch(
-    "http://localhost:5001/rewrite",
+    "https://promptforge-backend-v8z7.onrender.com/rewrite",
     {
       method: "POST",
       headers: {
@@ -62,7 +62,7 @@ export async function rewritePrompt(input) {
 export async function summarizePrompt(input) {
 
   const response = await fetch(
-    "http://localhost:5001/summarize",
+    "https://promptforge-backend-v8z7.onrender.com/summarize",
     {
       method: "POST",
       headers: {
@@ -92,7 +92,7 @@ export async function createCheckoutSession() {
   }
 
   const response = await fetch(
-    "http://localhost:5001/create-checkout-session",
+    "https://promptforge-backend-v8z7.onrender.com/create-checkout-session",
     {
       method: "POST",
       headers: {

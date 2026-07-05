@@ -32,7 +32,7 @@ console.log("UID:",user.uid);
 
 
 await fetch(
-"http://localhost:5001/upgrade-success",
+"https://promptforge-backend-v8z7.onrender.com/upgrade-success",
 {
 
 method:"POST",

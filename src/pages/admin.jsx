@@ -38,7 +38,7 @@ function Admin() {
   const [currentPage, setCurrentPage] = useState(1);
   const pageSize = 8;
 
-  const API_URL = "http://localhost:5001";
+  const API_URL = "https://promptforge-backend-v8z7.onrender.com";
 
   const colors = {
     bgCard: isDark ? "#111827" : "#f3f4f6",
