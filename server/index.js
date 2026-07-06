@@ -1,6 +1,9 @@
 console.log("OPENAI:", process.env.OPENAI_API_KEY ? "FOUND" : "MISSING");
 console.log("STRIPE:", process.env.STRIPE_SECRET_KEY ? "FOUND" : "MISSING");
 console.log("FIREBASE:", process.env.FIREBASE_PROJECT_ID ? "FOUND" : "MISSING");
+console.log("SMTP_USER:", process.env.SMTP_USER);
+console.log("SMTP_PASS:", process.env.SMTP_PASS ? "FOUND" : "MISSING");
+console.log("ADMIN_EMAIL:", process.env.ADMIN_EMAIL);
 import express from "express";
 import rateLimit from "express-rate-limit";
 import dotenv from "dotenv";
@@ -340,7 +343,14 @@ app.post("/contact", async (req, res) => {
       },
     });
 
-    await transporter.verify();
+    try {
+      await transporter.verify();
+      console.log("SMTP Connected");
+    } catch (err) {
+      console.error("SMTP VERIFY FAILED");
+      console.error(err);
+      throw err;
+    }
 
     await transporter.sendMail({
       from: process.env.SMTP_USER,
@@ -359,9 +369,12 @@ app.post("/contact", async (req, res) => {
 
     return res.json({ success: true });
   } catch (error) {
-    console.error("Contact Error:", error);
+    console.error("========== CONTACT ERROR ==========");
+    console.error(error);
+    console.error(error.stack);
+
     return res.status(500).json({
-      error: error.message || "Failed to send message.",
+      error: error.message,
     });
   }
 });
