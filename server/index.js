@@ -341,17 +341,28 @@ app.post("/contact", async (req, res) => {
         user: process.env.SMTP_USER,
         pass: process.env.SMTP_PASS,
       },
+      connectionTimeout: 10000,
+      greetingTimeout: 10000,
+      socketTimeout: 10000,
     });
+
+    console.log("BEFORE SMTP VERIFY");
 
     try {
       await transporter.verify();
-      console.log("SMTP Connected");
-    } catch (err) {
-      console.error("SMTP VERIFY FAILED");
-      console.error(err);
-      throw err;
-    }
 
+      console.log("SMTP CONNECTED SUCCESS");
+
+    } catch (err) {
+
+      console.error("SMTP ERROR:");
+      console.error(err);
+
+      return res.status(500).json({
+        error: err.message
+      });
+    }
+    console.log("BEFORE SENDING EMAILS");
     await transporter.sendMail({
       from: process.env.SMTP_USER,
       to: process.env.ADMIN_EMAIL,
@@ -366,7 +377,7 @@ app.post("/contact", async (req, res) => {
       subject: "We received your message",
       text: `Hi ${name},\n\nThanks for contacting us. We’ve received your message and will get back to you soon.\n\n— PromptForge Team`,
     });
-
+    console.log("ALL EMAILS SENT");
     return res.json({ success: true });
   } catch (error) {
       console.error("========== CONTACT ERROR ==========");
