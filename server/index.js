@@ -369,14 +369,14 @@ app.post("/contact", async (req, res) => {
 
     return res.json({ success: true });
   } catch (error) {
-    console.error("========== CONTACT ERROR ==========");
-    console.error(error);
-    console.error(error.stack);
+      console.error("========== CONTACT ERROR ==========");
+      console.error(error);
 
-    return res.status(500).json({
-      error: error.message,
-    });
-  }
+      return res.status(500).json({
+        error: error.message,
+        stack: error.stack
+      });
+    }
 });
 // Stripe webhook
 app.post("/webhook", express.raw({ type: "application/json" }), async (req, res) => {
