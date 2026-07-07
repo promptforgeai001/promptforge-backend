@@ -1,9 +1,9 @@
 console.log("OPENAI:", process.env.OPENAI_API_KEY ? "FOUND" : "MISSING");
 console.log("STRIPE:", process.env.STRIPE_SECRET_KEY ? "FOUND" : "MISSING");
 console.log("FIREBASE:", process.env.FIREBASE_PROJECT_ID ? "FOUND" : "MISSING");
-console.log("SMTP_USER:", process.env.SMTP_USER);
-console.log("SMTP_PASS:", process.env.SMTP_PASS ? "FOUND" : "MISSING");
+
 console.log("ADMIN_EMAIL:", process.env.ADMIN_EMAIL);
+
 import express from "express";
 import rateLimit from "express-rate-limit";
 import dotenv from "dotenv";
@@ -13,9 +13,13 @@ import { initializeApp, cert } from "firebase-admin/app";
 import { getFirestore } from "firebase-admin/firestore";
 
 import cors from "cors";
-import nodemailer from "nodemailer";
+import { Resend } from "resend";
+
+
+
 
 dotenv.config({ override: true });
+const resend = new Resend(process.env.RESEND_API_KEY);
 const app = express();
 
 const corsOptions = {
@@ -320,65 +324,37 @@ app.post("/contact", async (req, res) => {
       return res.status(400).json({ error: "All fields are required." });
     }
 
-    const smtpReady =
-      process.env.SMTP_USER &&
-      process.env.SMTP_PASS &&
-      process.env.ADMIN_EMAIL;
+    console.log(
+    process.env.RESEND_API_KEY ? "RESEND FOUND" : "RESEND MISSING"
+    );
 
-    if (!smtpReady) {
-      console.log("SMTP not configured. Contact message:");
-      console.log({ name, email, subject, message });
-
-      return res.json({
-        success: true,
-        message: "Message received. Email not configured yet.",
-      });
-    }
-
-    const transporter = nodemailer.createTransport({
-      host: "smtp.gmail.com",
-      port: 587,
-      secure: false,
-      family: 4,
-      auth: {
-        user: process.env.SMTP_USER,
-        pass: process.env.SMTP_PASS,
-      },
-      connectionTimeout: 10000,
-      greetingTimeout: 10000,
-      socketTimeout: 10000,
-    });
-
-    console.log("BEFORE SMTP VERIFY");
-
-    try {
-      await transporter.verify();
-
-      console.log("SMTP CONNECTED SUCCESS");
-
-    } catch (err) {
-
-      console.error("SMTP ERROR:");
-      console.error(err);
-
-      return res.status(500).json({
-        error: err.message
-      });
-    }
-    console.log("BEFORE SENDING EMAILS");
-    await transporter.sendMail({
-      from: process.env.SMTP_USER,
+    await resend.emails.send({
+      from: "PromptForge <onboarding@resend.dev>",
       to: process.env.ADMIN_EMAIL,
       replyTo: email,
       subject: `Contact Form: ${subject}`,
-      text: `New contact message\n\nName: ${name}\nEmail: ${email}\nSubject: ${subject}\n\nMessage:\n${message}`,
+      text: `
+    Name: ${name}
+
+    Email: ${email}
+
+    Message:
+
+    ${message}
+    `,
     });
 
-    await transporter.sendMail({
-      from: process.env.SMTP_USER,
+    await resend.emails.send({
+      from: "PromptForge <onboarding@resend.dev>",
       to: email,
       subject: "We received your message",
-      text: `Hi ${name},\n\nThanks for contacting us. We’ve received your message and will get back to you soon.\n\n— PromptForge Team`,
+      text: `Hi ${name},
+
+    Thanks for contacting PromptForge.
+
+    We received your message and will reply as soon as possible.
+
+    PromptForge Team`,
     });
     console.log("ALL EMAILS SENT");
     return res.json({ success: true });
